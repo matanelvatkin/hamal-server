@@ -9,7 +9,7 @@ const getUser = async (fullName,proj) => {
 const getAllUser = async () => {
   const users = await userController.read();
   if (!users) throw 'users nut founds';
-  return users;
+  return users.sort((a,b)=>a.fullName.localeCompare(b.fullName));
 };
 const getUserForRegister = async (fullName) => {
   const user = await userController.readOne({ fullName });
