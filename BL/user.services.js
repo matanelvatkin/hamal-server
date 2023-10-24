@@ -9,7 +9,7 @@ const getUser = async (fullName,proj) => {
 const getAllUser = async () => {
   const users = await userController.read();
   if (!users) throw 'users nut founds';
-  return users.sort((a,b)=>a.fullName.localeCompare(b.fullName));
+  return users.sort((a,b)=>a.fullName.localeCompare(b.fullName)).sort((a,b)=>Number(a.isActive)-Number(b.isActive))
 };
 const getUserForRegister = async (fullName) => {
   const user = await userController.readOne({ fullName });
