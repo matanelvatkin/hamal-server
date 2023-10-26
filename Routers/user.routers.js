@@ -60,7 +60,16 @@ userRouter.put("/update", validToken, async (req, res) => {
   try {
     const user = await userService.getUser(req.body.fullName);
     const updateUser = await userService.updateUser(user);
-    res.send('updateUser');
+    res.send(updateUser);
+  } catch (err) {
+    res.status(999).send(err);
+  }
+});
+
+userRouter.put("/addposition", validToken, async (req, res) => {
+  try {
+    const updateUser = await userService.addPosition(req.body.user,req.body.position);
+    res.send(updateUser);
   } catch (err) {
     res.status(999).send(err);
   }

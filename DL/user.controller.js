@@ -1,18 +1,18 @@
 const userData = require("./user.model");
-
+require('./position.model')
 async function create(data) {
   return await userData.create(data);
 }
 
 async function read(filter) {
   if (filter) {
-    return await userData.find(filter)
+    return await userData.find(filter).populate('position');
   }
   return await userData.find({});
 }
 
 async function readOne(filter,proj) {
-  const res = await userData.findOne(filter,proj)
+  const res = await userData.findOne(filter,proj).populate('position')
   return res;
 }
 
@@ -22,7 +22,7 @@ async function update(filter, newData) {
 
 async function updateAndReturn(filter, newData) {
   let data = await userData
-    .findOneAndUpdate(filter, newData, { new: true })
+    .findOneAndUpdate(filter, newData, { new: true }).populate('position')
   if (!data) throw 'user not found';
   return data;
 }
