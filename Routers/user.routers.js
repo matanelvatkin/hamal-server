@@ -4,24 +4,23 @@ const userService = require("../BL/user.services");
 const { createToken, validToken } = require("../jwt");
 userRouter.post("/login", async (req, res) => {
   try {
-    const user = await userService.getUser(req.body.fullName);
+    const user = await userService.getUser(req.body.user);
     const token = createToken(user.fullName, user.role);
     res.send({ user, token });
   } catch (err) {
     res.status(999).send(err);
   }
 });
-userRouter.post("/register", async (req, res) => {
+userRouter.put("/deleteuser",validToken, async (req, res) => {
   try {
-    const user = await userService.createUser(req.body);
-    const token = createToken(user.fullName, user.role);
-    res.send({ user, token });
+    await userService.deleteUser(req.body);
+    res.send('ok');
   } catch (err) {
     res.status(999).send(err);
   }
 });
 
-userRouter.post("/userfromadmin", async (req, res) => {
+userRouter.post("/userfromadmin",validToken, async (req, res) => {
   try {
     const user = await userService.createUser(req.body);
     res.send({ user });
@@ -53,7 +52,7 @@ userRouter.put("/update", validToken, async (req, res) => {
   try {
     const user = await userService.getUser(req.body.fullName);
     const updateUser = await userService.updateUser(user);
-    res.send(updateUser);
+    res.send('updateUser');
   } catch (err) {
     res.status(999).send(err);
   }

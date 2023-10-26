@@ -7,7 +7,7 @@ const getUser = async (fullName,proj) => {
   return user;
 };
 const getAllUser = async () => {
-  const users = await userController.read();
+  const users = await userController.read({isDelete:false});
   if (!users) throw 'users nut founds';
   return users.sort((a,b)=>a.fullName.localeCompare(b.fullName)).sort((a,b)=>Number(a.isActive)-Number(b.isActive))
 };
@@ -22,7 +22,10 @@ const createUser = async (data) => {
   return await userController.create(data);
 };
 const updateUser = async (user) => {
-  return await userController.updateAndReturn({fullName:user.fullName},{isActive:!user.isActive});
+  return await userController.updateAndReturn({_id:user._id},{isActive:!user.isActive});
+};
+const deleteUser = async (user) => {
+  return await userController.updateAndReturn({_id:user._id},{isDelete:!user.true});
 };
 
-module.exports = {getUser,createUser,updateUser,getAllUser}
+module.exports = {getUser,createUser,updateUser,getAllUser,deleteUser}

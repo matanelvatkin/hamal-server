@@ -16,7 +16,7 @@ const validToken = async (req, res, next)=> {
         req.userData = result
         next();
     } 
-    catch(e){
+    catch(err){
         res.status(403).send(err)
     }  
 }
