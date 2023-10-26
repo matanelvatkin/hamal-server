@@ -4,7 +4,7 @@ const userService = require("../BL/user.services");
 const { createToken, validToken } = require("../jwt");
 userRouter.post("/login", async (req, res) => {
   try {
-    const user = await userService.getUser(req.body.user);
+    const user = await userService.getUser(req.body.fullName);
     const token = createToken(user.fullName, user.role);
     res.send({ user, token });
   } catch (err) {
