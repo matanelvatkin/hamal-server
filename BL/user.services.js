@@ -24,8 +24,12 @@ const createUser = async (data) => {
 const updateUser = async (user) => {
   return await userController.updateAndReturn({_id:user._id},{isActive:!user.isActive});
 };
+
+const crateAdmin = async (user) => {
+  return await userController.updateAndReturn({_id:user._id},{role:user.role==='admin'?'user':'admin'});
+};
 const deleteUser = async (user) => {
   return await userController.updateAndReturn({_id:user._id},{isDelete:!user.true});
 };
 
-module.exports = {getUser,createUser,updateUser,getAllUser,deleteUser}
+module.exports = {getUser,createUser,updateUser,getAllUser,deleteUser,crateAdmin}

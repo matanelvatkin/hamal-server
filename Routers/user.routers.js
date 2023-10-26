@@ -19,6 +19,14 @@ userRouter.put("/deleteuser",validToken, async (req, res) => {
     res.status(999).send(err);
   }
 });
+userRouter.put("/crateadmin",validToken, async (req, res) => {
+  try {
+    await userService.crateAdmin(req.body);
+    res.send('ok');
+  } catch (err) {
+    res.status(999).send(err);
+  }
+});
 
 userRouter.post("/userfromadmin",validToken, async (req, res) => {
   try {
