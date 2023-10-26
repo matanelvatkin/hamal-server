@@ -30,7 +30,7 @@ userRouter.put("/crateadmin",validToken, async (req, res) => {
 
 userRouter.post("/userfromadmin",validToken, async (req, res) => {
   try {
-    const user = await userService.createUser(req.body);
+    const user = await userService.createUser(req.body,req.userData);
     res.send({ user });
   } catch (err) {
     console.log(err);
@@ -49,7 +49,7 @@ userRouter.get("/", validToken, async (req, res) => {
 });
 userRouter.get("/allusers", validToken, async (req, res) => {
   try {
-    const users = await userService.getAllUser();
+    const users = await userService.getAllUser(req.userData);
     res.send(users);
   } catch (err) {
     console.log(err);

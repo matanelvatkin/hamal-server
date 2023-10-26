@@ -6,8 +6,8 @@ const getPosition = async (_id,proj) => {
   if (!position) throw 'position nut found';
   return position;
 };
-const getAllPosition = async () => {
-  const positions = await positionController.read({isActive:true});
+const getAllPosition = async (admin) => {
+  const positions = await positionController.read({organization:admin.organization,isActive:true});
   if (!positions) throw 'positions nut founds';
   return positions.sort((a,b)=>a.name.localeCompare(b.name))
 };
@@ -17,8 +17,9 @@ const getPositionForRegister = async (name) => {
   return position;
 };
 
-const createPosition = async (data) => {
+const createPosition = async (data,admin) => {
   await getPositionForRegister(data.name);
+  data.organization = admin.organization
   return await positionController.create(data);
 };
 const deletePosition = async (position) => {
@@ -26,3 +27,5 @@ const deletePosition = async (position) => {
 };
 
 module.exports = {getPosition,createPosition,getAllPosition,deletePosition}
+
+

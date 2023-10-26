@@ -1,4 +1,5 @@
 const jwt=require('jsonwebtoken');
+const userController = require('./DL/user.controller')
 const secret = process.env.SECRET
 
 const createToken = (fullName,role) =>{
@@ -13,7 +14,7 @@ const validToken = async (req, res, next)=> {
     try{
         var result = jwt.verify(req.headers.authorization.replace('Bearer ', ''), secret)
         if(!result.fullName) throw 'user not recognized'
-        req.userData = result
+        req.userData = await userController.readOne({fullName: result.fullName})
         next();
     } 
     catch(err){

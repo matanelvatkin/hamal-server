@@ -14,7 +14,7 @@ positionRouter.put("/deleteposition",validToken, async (req, res) => {
 });
 positionRouter.post("/addposition",validToken, async (req, res) => {
   try {
-    const results = await positionService.createPosition(req.body);
+    const results = await positionService.createPosition(req.body,req.userData);
     res.send(results);
   } catch (err) {
     res.status(999).send(err);
@@ -23,7 +23,7 @@ positionRouter.post("/addposition",validToken, async (req, res) => {
 
 positionRouter.get("/allpositions", validToken, async (req, res) => {
     try {
-        const results = await positionService.getAllPosition();
+        const results = await positionService.getAllPosition(req.userData);
         res.send(results);
     } catch (err) {
         console.log(err);

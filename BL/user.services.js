@@ -6,8 +6,8 @@ const getUser = async (fullName,proj) => {
   if (!user) throw 'user nut found';
   return user;
 };
-const getAllUser = async () => {
-  const users = await userController.read({isDelete:false});
+const getAllUser = async (admin) => {
+  const users = await userController.read({organization:admin.organization, isDelete:false});
   if (!users) throw 'users nut founds';
   return users.sort((a,b)=>a.fullName.localeCompare(b.fullName)).sort((a,b)=>Number(a.isActive)-Number(b.isActive))
 };
@@ -17,8 +17,9 @@ const getUserForRegister = async (fullName) => {
   return user;
 };
 
-const createUser = async (data) => {
+const createUser = async (data,admin) => {
   await getUserForRegister(data.fullName);
+  data.organization = admin.organization
   return await userController.create(data);
 };
 const updateUser = async (user) => {
