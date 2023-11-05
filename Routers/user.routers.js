@@ -66,7 +66,7 @@ userRouter.put("/update", validToken, async (req, res) => {
   try {
     const user = await userService.getUser(req.body.fullName);
     const updateUser = await userService.updateUser(user, {
-      isActive: user.isActive,
+      isActive: !user.isActive,
     });
     res.send(updateUser);
   } catch (err) {
