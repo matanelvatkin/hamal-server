@@ -1,5 +1,5 @@
 const userController = require("../DL/user.controller");
-
+const { sendMail } = require("./email.services");
 
 const getUser = async (fullName,proj) => {
   const user = await userController.readOne({ fullName },proj);
@@ -16,14 +16,30 @@ const getUserForRegister = async (fullName) => {
   if (user) throw 'user already registered';
   return user;
 };
-
+const forgetPassword = async(email)=> {
+  const code=Math.floor(Math.random()*1000000);
+  const subject = 'Forget Password'
+  const html = `
+    <div dir="RTL" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1>איפוס סיסמא</h1>
+      <p>Dear ${email},</p>
+      <p>קיבלנו את בקשתך לאפס את הסיסמה לחשבון שלך..</p>
+      <h2>קוד איפוס הסיסמה שלך הוא:${code}</h2>
+      <p>לאפס את הקוד אנא הזן קוד זה בטופס איפוס הסיסמה כדי להגדיר סיסמה חדשה.</p>
+      <p>אם לא ביקשת איפוס סיסמה, אנא התעלם מאימייל זה.</p>
+      <p>,תודה</p>
+    </div>`
+  await sendMail(email, subject, html)
+  return code
+}
 const createUser = async (data,admin) => {
   await getUserForRegister(data.fullName);
   data.organization = admin.organization
   return await userController.create(data);
 };
-const updateUser = async (user) => {
-  return await userController.updateAndReturn({_id:user._id},{isActive:!user.isActive});
+const updateUser = async (user,dataToUpdate) => {
+  console.log(dataToUpdate);
+  return await userController.updateAndReturn({_id:user._id},dataToUpdate);
 };
 const addPosition = async (user,position) => {
   return await userController.updateAndReturn({_id:user._id},{position:position._id});
@@ -36,4 +52,6 @@ const deleteUser = async (user) => {
   return await userController.updateAndReturn({_id:user._id},{isDelete:!user.true});
 };
 
-module.exports = {getUser,createUser,updateUser,getAllUser,deleteUser,crateAdmin,addPosition}
+
+
+module.exports = {getUser,createUser,updateUser,getAllUser,deleteUser,crateAdmin,addPosition,forgetPassword}

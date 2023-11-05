@@ -2,35 +2,41 @@ const express = require("express");
 const userRouter = express.Router();
 const userService = require("../BL/user.services");
 const { createToken, validToken } = require("../jwt");
+const bcrypt = require("bcrypt");
+const { sendMail } = require("../BL/email.services");
+
 userRouter.post("/login", async (req, res) => {
   try {
-    const user = await userService.getUser(req.body.fullName);
+    const user = await userService.getUser(req.body.fullName,'+passwords');
+    console.log(req.body.password);
+    if(!bcrypt.compareSync(req.body.password,user.passwords )) throw 'password mismatch'
     const token = createToken(user.fullName, user.role);
     res.send({ user, token });
   } catch (err) {
     res.status(999).send(err);
   }
 });
-userRouter.put("/deleteuser",validToken, async (req, res) => {
+
+userRouter.put("/deleteuser", validToken, async (req, res) => {
   try {
     await userService.deleteUser(req.body);
-    res.send('ok');
+    res.send("ok");
   } catch (err) {
     res.status(999).send(err);
   }
 });
-userRouter.put("/crateadmin",validToken, async (req, res) => {
+userRouter.put("/crateadmin", validToken, async (req, res) => {
   try {
     await userService.crateAdmin(req.body);
-    res.send('ok');
+    res.send("ok");
   } catch (err) {
     res.status(999).send(err);
   }
 });
 
-userRouter.post("/userfromadmin",validToken, async (req, res) => {
+userRouter.post("/userfromadmin", validToken, async (req, res) => {
   try {
-    const user = await userService.createUser(req.body,req.userData);
+    const user = await userService.createUser(req.body, req.userData);
     res.send({ user });
   } catch (err) {
     console.log(err);
@@ -59,7 +65,9 @@ userRouter.get("/allusers", validToken, async (req, res) => {
 userRouter.put("/update", validToken, async (req, res) => {
   try {
     const user = await userService.getUser(req.body.fullName);
-    const updateUser = await userService.updateUser(user);
+    const updateUser = await userService.updateUser(user, {
+      isActive: user.isActive,
+    });
     res.send(updateUser);
   } catch (err) {
     res.status(999).send(err);
@@ -68,7 +76,54 @@ userRouter.put("/update", validToken, async (req, res) => {
 
 userRouter.put("/addposition", validToken, async (req, res) => {
   try {
-    const updateUser = await userService.addPosition(req.body.user,req.body.position);
+    const updateUser = await userService.updateUser(req.body.user, {
+      position: req.body.position,
+    });
+    res.send(updateUser);
+  } catch (err) {
+    res.status(999).send(err);
+  }
+});
+userRouter.put("/updatepassword", async (req, res) => {
+  try {
+    const user = await userService.getUser(req.body.fullName);
+    console.log(req.body.password);
+    const passwords = bcrypt.hashSync(req.body.password, 10);
+    const updateUser = await userService.updateUser(user, {
+      passwords
+    });
+    res.send(updateUser);
+  } catch (err) {
+    res.status(999).send(err);
+  }
+});
+userRouter.put("/forgetpassword", async (req, res) => {
+  try {
+    const user = await userService.getUser(req.body.fullName)
+    const code = await userService.forgetPassword(req.body.email);
+    await userService.updateUser(user,{email:req.body.email})
+    res.send({ code });
+  } catch (err) {
+    res.status(999).send(err);
+  }
+});
+userRouter.put("/updateemail", validToken, async (req, res) => {
+  try {
+    const passwords = bcrypt.hashSync(req.body.password, 10);
+    const updateUser = await userService.updateUser(req.body.user, {
+      email: req.body.email,
+      passwords,
+    });
+    const subject = "welcome to hamal";
+    const html = `
+    <div dir="RTL" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <p>ברוך הבא לחמל</p>
+    <p>
+    מנהל את כיתת הכוננות שלך
+    </p>
+    </div>`;
+    console.log("afasd");
+    await sendMail(updateUser.email, subject, html);
     res.send(updateUser);
   } catch (err) {
     res.status(999).send(err);
