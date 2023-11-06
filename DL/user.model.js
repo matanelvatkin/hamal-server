@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
   },
-  role: { type: String, enum: ["admin", "user"], default: "user" },
+  role: { type: String, enum: ["admin", "user","developer"], default: "user" },
   city: { type: String },
   organization: { type: mongoose.Schema.Types.ObjectId, ref: "organization" },
   position: { type: mongoose.Schema.Types.ObjectId, ref: "position" },
