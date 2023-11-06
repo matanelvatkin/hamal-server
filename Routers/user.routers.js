@@ -61,6 +61,15 @@ userRouter.get("/", validToken, async (req, res) => {
     res.status(999).send(err);
   }
 });
+userRouter.get("/allusers", validToken, async (req, res) => {
+  try {
+    const users = await userService.getAllUser(req.userData);
+    res.send(users);
+  } catch (err) {
+    console.log(err);
+    res.status(999).send(err);
+  }
+});
 userRouter.get("/allusersdev/:org", validToken,isDev, async (req, res) => {
   try {
     req.userData.organization = req.params.org
