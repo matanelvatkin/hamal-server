@@ -1,4 +1,5 @@
 const userData = require("./user.model");
+const organization = require("./organization.controller");
 require('./position.model')
 async function create(data) {
   return await userData.create(data);
@@ -19,7 +20,6 @@ async function readOne(filter,proj) {
 async function update(filter, newData) {
   return await userData.updateOne(filter, newData)
 }
-
 async function updateAndReturn(filter, newData) {
   let data = await userData
     .findOneAndUpdate(filter, newData, { new: true }).populate('position')

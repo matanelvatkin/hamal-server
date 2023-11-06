@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   },
   role: { type: String, enum: ["admin", "user"], default: "user" },
   city: { type: String },
-  organization: { type: String },
+  organization: { type: mongoose.Schema.Types.ObjectId, ref: "organization" },
   position: { type: mongoose.Schema.Types.ObjectId, ref: "position" },
   isActive: { type: Boolean, default: true },
   isDelete: { type: Boolean, default: false },

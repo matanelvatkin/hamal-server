@@ -8,7 +8,6 @@ const { sendMail } = require("../BL/email.services");
 userRouter.post("/login", async (req, res) => {
   try {
     const user = await userService.getUser(req.body.fullName,'+passwords');
-    console.log(req.body.password);
     if(!bcrypt.compareSync(req.body.password,user.passwords )) throw 'password mismatch'
     const token = createToken(user.fullName, user.role);
     res.send({ user, token });
@@ -87,7 +86,6 @@ userRouter.put("/addposition", validToken, async (req, res) => {
 userRouter.put("/updatepassword", async (req, res) => {
   try {
     const user = await userService.getUser(req.body.fullName);
-    console.log(req.body.password);
     const passwords = bcrypt.hashSync(req.body.password, 10);
     const updateUser = await userService.updateUser(user, {
       passwords
@@ -122,7 +120,6 @@ userRouter.put("/updateemail", validToken, async (req, res) => {
     מנהל את כיתת הכוננות שלך
     </p>
     </div>`;
-    console.log("afasd");
     await sendMail(updateUser.email, subject, html);
     res.send(updateUser);
   } catch (err) {
