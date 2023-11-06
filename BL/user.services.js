@@ -10,6 +10,7 @@ const getAllUser = async (admin) => {
   const users = await userController.read({
     organization: admin.organization,
     isDelete: false,
+    role:['user', 'admin']
   });
   if (!users) throw "users nut founds";
   return users
@@ -54,7 +55,6 @@ const createUser = async (data, admin) => {
   return await userController.create(data);
 };
 const updateUser = async (user, dataToUpdate) => {
-  console.log(dataToUpdate);
   return await userController.updateAndReturn({ _id: user._id }, dataToUpdate);
 };
 const addPosition = async (user, position) => {

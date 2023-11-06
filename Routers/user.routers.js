@@ -1,7 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 const userService = require("../BL/user.services");
-const { createToken, validToken } = require("../jwt");
+const { createToken, validToken, isDev } = require("../jwt");
 const bcrypt = require("bcrypt");
 const { sendMail } = require("../BL/email.services");
 
@@ -33,6 +33,15 @@ userRouter.put("/crateadmin", validToken, async (req, res) => {
   }
 });
 
+userRouter.post("/userfromdev", validToken,isDev, async (req, res) => {
+  try {
+    const user = await userService.createUser(req.body, {organization:req.body.org});
+    res.send({ user });
+  } catch (err) {
+    console.log(err);
+    res.status(999).send(err);
+  }
+});
 userRouter.post("/userfromadmin", validToken, async (req, res) => {
   try {
     const user = await userService.createUser(req.body, req.userData);
@@ -52,8 +61,9 @@ userRouter.get("/", validToken, async (req, res) => {
     res.status(999).send(err);
   }
 });
-userRouter.get("/allusers", validToken, async (req, res) => {
+userRouter.get("/allusersdev/:org", validToken,isDev, async (req, res) => {
   try {
+    req.userData.organization = req.params.org
     const users = await userService.getAllUser(req.userData);
     res.send(users);
   } catch (err) {

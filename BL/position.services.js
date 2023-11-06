@@ -11,15 +11,15 @@ const getAllPosition = async (admin) => {
   if (!positions) throw 'positions nut founds';
   return positions.sort((a,b)=>a.name.localeCompare(b.name))
 };
-const getPositionForRegister = async (name) => {
-  const position = await positionController.readOne({ name,isActive:true });
+const getPositionForRegister = async (name,organization) => {
+  const position = await positionController.readOne({ name,isActive:true,organization });
   if (position) throw 'position already exist';
   return position;
 };
 
 const createPosition = async (data,admin) => {
-  await getPositionForRegister(data.name);
   data.organization = admin.organization
+  await getPositionForRegister(data.name,data.organization);
   return await positionController.create(data);
 };
 const deletePosition = async (position) => {
