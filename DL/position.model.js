@@ -4,8 +4,8 @@ const positionSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+  organization: { type: mongoose.Schema.Types.ObjectId, ref: "organization" },
   positionNumber: {type: Number},
-  organization: {type: String},
   isActive: {type: Boolean, default: true},
 });
 
